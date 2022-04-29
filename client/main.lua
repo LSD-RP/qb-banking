@@ -213,3 +213,10 @@ RegisterNUICallback("updatePin", function(data, cb)
         TriggerServerEvent('qb-banking:updatePin', data.pin)
     end
 end)
+
+AddEventHandler('onResourceStart', function(resourceName)
+    if (GetCurrentResourceName() ~= resourceName) then
+      return
+    end
+    createBlips()
+end)

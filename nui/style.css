@@ -100,3 +100,8 @@ small {
 #savingsBalance {
     color: #28a745;
 }
+
+.form-control {
+    color: black !important;
+    font-weight: bolder;
+}
