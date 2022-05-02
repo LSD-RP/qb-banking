@@ -159,8 +159,10 @@ CreateThread(function()
                         DrawText3Ds(v.x, v.y, v.z-0.25, '~g~E~w~ - Access Bank')
                         if IsControlJustPressed(0, 38) then
                             -- openAccountScreen()
-                            BankControl(    )
+                            BankControl()
                         end
+                    else
+                        BankControlPress = false
                     end
                 end
             end

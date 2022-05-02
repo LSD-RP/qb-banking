@@ -43,7 +43,7 @@ Citizen.CreateThread(function()
     end
     
     if shouldCalculate then
-        print(("should calculate: %s"):format(tostring(shouldCalculate)))
+        -- print(("should calculate: %s"):format(tostring(shouldCalculate)))
         local interestAccounts = exports.oxmysql:executeSync('SELECT * FROM bank_accounts', {})
         if interestAccounts then
             for i,v in pairs(interestAccounts) do
@@ -64,10 +64,7 @@ Citizen.CreateThread(function()
             os.time()
         })
     end
-    
     Wait(100)
-
-    
 end)
 
 exports('business', function(acctType, bid)
