@@ -1,6 +1,4 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-local inBankZone = false
-local InBank = false
 local blips = {}
 
 -- Functions
@@ -20,7 +18,7 @@ local function createBlips()
 end
 
 local function removeBlips()
-    for k, v in pairs(Config.BankLocations) do
+    for k, _ in pairs(Config.BankLocations) do
         RemoveBlip(blips[k])
     end
     blips = {}
@@ -29,7 +27,6 @@ end
 local function openAccountScreen()
     QBCore.Functions.TriggerCallback('qb-banking:getBankingInformation', function(banking)
         if banking ~= nil then
-            InBank = true
             SetNuiFocus(true, true)
             SendNUIMessage({
                 status = "openbank",
@@ -179,7 +176,6 @@ end)
 -- NUI
 
 RegisterNetEvent("hidemenu", function()
-    InBank = false
     SetNuiFocus(false, false)
     SendNUIMessage({
         status = "closebank"
@@ -196,81 +192,101 @@ end)
 
 -- NUI Callbacks
 
-RegisterNUICallback("NUIFocusOff", function(data, cb)
-    InBank = false
+RegisterNUICallback("NUIFocusOff", function(_, cb)
     SetNuiFocus(false, false)
     SendNUIMessage({
         status = "closebank"
     })
+    cb("ok")
 end)
 
-RegisterNUICallback("createSavingsAccount", function(data, cb)
+RegisterNUICallback("createSavingsAccount", function(_, cb)
     TriggerServerEvent('qb-banking:createSavingsAccount')
+    cb("ok")
 end)
 
 RegisterNUICallback("doDeposit", function(data, cb)
     if tonumber(data.amount) ~= nil and tonumber(data.amount) > 0 then
         TriggerServerEvent('qb-banking:doQuickDeposit', data.amount)
         openAccountScreen()
+        cb("ok")
     end
+    cb(nil)
 end)
 
 RegisterNUICallback("doWithdraw", function(data, cb)
     if tonumber(data.amount) ~= nil and tonumber(data.amount) > 0 then
         TriggerServerEvent('qb-banking:doQuickWithdraw', data.amount, true)
         openAccountScreen()
+        cb("ok")
     end
+    cb(nil)
 end)
 
 RegisterNUICallback("doATMWithdraw", function(data, cb)
     if tonumber(data.amount) ~= nil and tonumber(data.amount) > 0 then
         TriggerServerEvent('qb-banking:doQuickWithdraw', data.amount, false)
         openAccountScreen()
+        cb("ok")
     end
+    cb(nil)
 end)
 
 RegisterNUICallback("savingsDeposit", function(data, cb)
     if tonumber(data.amount) ~= nil and tonumber(data.amount) > 0 then
         TriggerServerEvent('qb-banking:savingsDeposit', data.amount)
         openAccountScreen()
+        cb("ok")
     end
+    cb(nil)
 end)
 
-RegisterNUICallback("requestNewCard", function(data, cb)
+RegisterNUICallback("requestNewCard", function(_, cb)
     TriggerServerEvent('qb-banking:createNewCard')
+    cb("ok")
 end)
 
 RegisterNUICallback("savingsWithdraw", function(data, cb)
     if tonumber(data.amount) ~= nil and tonumber(data.amount) > 0 then
         TriggerServerEvent('qb-banking:savingsWithdraw', data.amount)
         openAccountScreen()
+        cb("ok")
     end
+    cb(nil)
 end)
 
 RegisterNUICallback("doTransfer", function(data, cb)
     if data ~= nil then
         TriggerServerEvent('qb-banking:initiateTransfer', data)
+        cb("ok")
     end
+    cb(nil)
 end)
 
 RegisterNUICallback("createDebitCard", function(data, cb)
     if data.pin ~= nil then
         TriggerServerEvent('qb-banking:createBankCard', data.pin)
+        cb("ok")
     end
+    cb(nil)
 end)
 
-RegisterNUICallback("lockCard", function(data, cb)
+RegisterNUICallback("lockCard", function(_, cb)
     TriggerServerEvent('qb-banking:toggleCard', true)
+    cb("ok")
 end)
 
-RegisterNUICallback("unLockCard", function(data, cb)
+RegisterNUICallback("unLockCard", function(_, cb)
     TriggerServerEvent('qb-banking:toggleCard', false)
+    cb("ok")
 end)
 
 RegisterNUICallback("updatePin", function(data, cb)
     if data.pin ~= nil then
         TriggerServerEvent('qb-banking:updatePin', data.pin)
+        cb("ok")
     end
+    cb(nil)
 end)
 
 AddEventHandler('onResourceStart', function(resourceName)
