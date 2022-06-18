@@ -37,7 +37,7 @@ Citizen.CreateThread(function()
         local lastCalculate = lastTime[1].timestamp
         local diff = os.difftime(os.time(), lastCalculate)
         local twentyThreeHours = 23 * 60 * 60
-        if diff > twentyThreeHours then
+        if diff >= twentyThreeHours then
             shouldCalculate = true
         end
     end
@@ -49,7 +49,13 @@ Citizen.CreateThread(function()
             for i,v in pairs(interestAccounts) do
                 if v.account_type == 'Savings' then
                     local balance = v.amount 
-                    local interest = balance * 0.02;
+                    local interestAmt = 0.02
+                    if balance >= 50000000 then
+                        interestAmt = 0.01
+                    elseif balance >= 100000000 then
+                        interestAmt = 0.0075
+                    end
+                    local interest = balance * interestAmt;
                     interest = math.floor(interest)
                     balance = balance + interest
                     exports.oxmysql:executeSync('UPDATE `bank_accounts` SET `amount`= ? WHERE record_id = ?', {
